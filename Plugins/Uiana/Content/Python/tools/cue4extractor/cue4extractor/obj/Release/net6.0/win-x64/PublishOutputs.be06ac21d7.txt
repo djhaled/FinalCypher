@@ -1,0 +1,6 @@
+C:\Users\BERNA\Downloads\Release-CUE4E\cue4extractor.pdb
+C:\Users\BERNA\Downloads\Release-CUE4E\libSkiaSharp.dll
+C:\Users\BERNA\Downloads\Release-CUE4E\CUE4Parse-Conversion.pdb
+C:\Users\BERNA\Downloads\Release-CUE4E\CUE4Parse.pdb
+C:\Users\BERNA\Downloads\Release-CUE4E\cue4extractor.xml
+C:\Users\BERNA\Downloads\Release-CUE4E\cue4extractor.exe

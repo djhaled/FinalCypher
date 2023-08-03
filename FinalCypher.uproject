@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "{10D35819-436C-EF0D-A24C-41903CB7AB33}",
+	"EngineAssociation": "5.2",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -45,26 +45,12 @@
 			"Enabled": true
 		},
 		{
-			"Name": "PlayFab",
-			"Enabled": true,
-			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/217fdf581b784571af03d3fb6580368f"
-		},
-		{
-			"Name": "RLPlugin",
-			"Enabled": true
-		},
-		{
 			"Name": "MultiUserClient",
 			"Enabled": true
 		},
 		{
 			"Name": "Metasound",
 			"Enabled": true
-		},
-		{
-			"Name": "FirebaseFeatures",
-			"Enabled": true,
-			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/81111c9d88144ab0968fd8953872a3d8"
 		},
 		{
 			"Name": "AutoSettings",
@@ -78,14 +64,6 @@
 		},
 		{
 			"Name": "EnhancedInput",
-			"Enabled": true
-		},
-		{
-			"Name": "Uiana",
-			"Enabled": true
-		},
-		{
-			"Name": "UnrealPSKPSA",
 			"Enabled": true
 		}
 	]

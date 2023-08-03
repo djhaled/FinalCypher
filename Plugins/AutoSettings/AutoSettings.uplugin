@@ -10,7 +10,7 @@
 	"DocsURL": "https://acren.github.io/AutoSettingsDocs/",
 	"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/fcc480bac77b4373bc6c68f0ae4f9847",
 	"SupportURL": "https://acren.github.io/AutoSettingsDocs/support/",
-	"EngineVersion": "5.0.0",
+	"EngineVersion": "5.2.0",
 	"CanContainContent": true,
 	"Installed": true,
 	"Modules": [

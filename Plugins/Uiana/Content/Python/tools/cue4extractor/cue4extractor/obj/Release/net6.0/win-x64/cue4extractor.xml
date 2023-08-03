@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>cue4extractor</name>
+    </assembly>
+    <members>
+        <member name="M:cue4extractor.Program.Main(System.String,System.String,System.String,System.String,System.String,System.String)">
+            <param name="gameDirectory">An option whose argument is parsed as an int</param>
+            <param name="aesKey">An option whose argument is parsed as a bool</param>
+            <param name="exportDirectory">An option whose argument is parsed as a bool</param>
+            <param name="mapName">An option whose argument is parsed as a FileInfo</param>
+            <param name="fileList">An option whose argument is parsed as a FileInfo</param>
+            <param name="gameUmaps">An option whose argument is parsed as a FileInfo</param>
+        </member>
+    </members>
+</doc>

@@ -16,15 +16,15 @@
 #include "Engine/World.h"
 #include "Kismet2/KismetEditorUtilities.h"
 #include "Misc/FileHelper.h"
+#include "EditorAssetLibrary.h"
 #include "Factories/TextureFactory.h"
 #include "StaticMeshDescription.h"
 #include "Misc/ScopedSlowTask.h"
 #include "PSKReader.h"
 #include "Engine/RendererSettings.h"
 #include "PSKXFactory.h"
-
-
-
+#include "StaticMeshComponentLODInfo.h"
+#include "UObject/SavePackage.h"
 
 
 UActorComponent* UBPFL::GetComponentByName(AActor* Actor, FName CompName)
@@ -128,7 +128,6 @@ void UBPFL::PaintSMVertices(UStaticMeshComponent* SMComp, TArray<FColor> VtxColo
 
 		//Initialize resource and mark render state of object as dirty in order for the engine to re-render it
 		BeginInitResource(LODInfo->OverrideVertexColors);
-		SMComp->MarkRenderStateDirty();
 	}
 }
 
@@ -218,6 +217,19 @@ void UBPFL::ExecuteConsoleCommand(FString ConsoleCommand) {
 		}
 	}
 }
+UObject* UBPFL::SetMeshReference(FString MeshObjectName, FString MeshType)
+{
+	FString PathToGo = FString::Printf(TEXT("/Game/ValorantContent/%s/%s"), *MeshType, *MeshObjectName);
+	// Remove the single quotation marks from the resulting path
+	PathToGo.RemoveFromEnd("'");
+	PathToGo.RemoveFromStart("'");
+	PathToGo = PathToGo.Replace(TEXT("StaticMesh'"), TEXT(""));
+	//L"/Game/ValorantContent/Meshes/StaticMesh'shared_SkyDomeB'"
+	auto Asset = UEditorAssetLibrary::LoadAsset(PathToGo);
+	return Asset;
+
+}
+
 void UBPFL::ImportTextures(TArray<FString> AllTexturesPath)
 {
 	auto AutomatedData = NewObject<UAutomatedAssetImportData>();
@@ -235,6 +247,7 @@ void UBPFL::ImportTextures(TArray<FString> AllTexturesPath)
 		tx.Split(TEXT("\\"), &TexGamePath, &TexName, ESearchCase::IgnoreCase, ESearchDir::FromEnd);
 		FString PathForTextures = FString::Printf(TEXT("/Game/ValorantContent/Textures/%s"), *TexName.Replace(TEXT(".png"),TEXT("")));
 		auto TexPackage = CreatePackage(nullptr ,*PathForTextures);
+		TexPackage->FullyLoad();
 		auto bCancelled = false;
 		auto NewTxName = TexName.Replace(TEXT(".png"),TEXT(""));
 		auto CreatedTexture = TextureFactory->FactoryCreateFile(UTexture2D::StaticClass(), TexPackage, FName(*NewTxName), RF_Public | RF_Standalone, tx, NULL, GWarn, bCancelled); 
@@ -262,10 +275,14 @@ void UBPFL::ImportTextures(TArray<FString> AllTexturesPath)
 		}
 		ImportTask.DefaultMessage = FText::FromString(FString::Printf(TEXT("Importing Texture : %d of %d: %s"), ActorIdx + 1, AllTexturesPath.Num() + 1, *NewTxName));
 		ImportTask.EnterProgressFrame();
-		Tex->MarkPackageDirty();
+		
+		Tex->UpdateResource();
 		FAssetRegistryModule::AssetCreated(Tex);
-		Tex->PreEditChange(nullptr);
-		Tex->PostEditChange();
+		const FString PackageFileName = FPackageName::LongPackageNameToFilename(TexPackage->GetName(), FPackageName::GetAssetPackageExtension());
+		FSavePackageArgs SaveArgs;
+		UPackage::SavePackage(TexPackage, Tex, *PackageFileName, SaveArgs);
+
+
 	}
 }
 
@@ -282,39 +299,11 @@ void UBPFL::ImportMeshes(TArray<FString> AllMeshesPath, FString ObjectsPath)
 	{
 		FString MeshGamePath, MeshName;
 		MPath.Split(TEXT("\\"), &MeshGamePath, &MeshName, ESearchCase::IgnoreCase, ESearchDir::FromEnd);
-		MeshName = MeshName.Replace(TEXT(".pskx"), TEXT(".json"));
-		FPaths Path;
 		ActorIdx++;
 		// JSON Stuff
-		FString UmapJson;
-		int LMRES = 256;
-		std::string BodySetupProps = "CTF_UseDefault";
-		int LMCoord = 0; 
-		float LMDens = 0.0;
-		FString Filename = Path.Combine(ObjectsPath, MeshName);
-		FFileHelper::LoadFileToString(UmapJson, *Filename);
-		auto Umap = nlohmann::json::parse(TCHAR_TO_UTF8(*UmapJson));
-		auto BodySetup = Umap[0];
-		auto StaticMeshPP = Umap[2];
-		if (!BodySetup["Properties"]["CollisionTraceFlag"].is_null())
-		{
-			BodySetupProps = BodySetup["Properties"]["CollisionTraceFlag"].get<std::string>();
-		}
-		auto StaticProps = StaticMeshPP["Properties"];
-		if (!StaticProps["LightMapResolution"].is_null())
-		{
-			LMRES = StaticProps["LightMapResolution"].get<int>();
-		}
-		if (!StaticProps["LightMapCoordinateIndex"].is_null())
-		{
-			LMCoord = StaticProps["LightMapCoordinateIndex"].get<int>();
-		}
-		if (!StaticProps["LightMapDensity"].is_null())
-		{
-			LMDens = StaticProps["LightMapDensity"].get<float>();
-		}
+
 		///// end json stuff
-		MeshName = MeshName.Replace(TEXT(".json"), TEXT(""));
+		MeshName = MeshName.Replace(TEXT(".pskx"), TEXT(""));
 		FString PathForMeshes = FString::Printf(TEXT("/Game/ValorantContent/Meshes/%s"), *MeshName);
 		auto MeshPackage = CreatePackage(*PathForMeshes);
 		auto bCancelled = false;
@@ -323,13 +312,10 @@ void UBPFL::ImportMeshes(TArray<FString> AllMeshesPath, FString ObjectsPath)
 		{
 			continue;
 		}
-		auto Msh = CastChecked<UStaticMesh>(CreatedMesh);
-		////////////
-		//Msh->Modify();
-		//Msh->SetLightMapResolution(LMRES);
-		//Msh->SetLightMapCoordinateIndex(LMCoord);
-		//Msh->SetLightmapUVDensity(LMDens);
-		Msh->GetBodySetup()->CollisionTraceFlag = GetTraceFlag(BodySetupProps.c_str());
+		FAssetRegistryModule::AssetCreated(CreatedMesh);
+		FSavePackageArgs SaveArgs;
+		const FString PackageFileName = FPackageName::LongPackageNameToFilename(MeshPackage->GetName(), FPackageName::GetAssetPackageExtension());
+		UPackage::SavePackage(MeshPackage, nullptr, *PackageFileName, SaveArgs);
 		ImportTask.DefaultMessage = FText::FromString(FString::Printf(TEXT("Importing Mesh : %d of %d: %s"), ActorIdx + 1, AllMeshesPath.Num() + 1, *MeshName));
 		ImportTask.EnterProgressFrame();
 		//Msh->Property
