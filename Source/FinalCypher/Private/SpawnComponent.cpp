@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
+#include "SpawnComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "PlayerCharacter.h"
 #include "ShooterGameMode.h"
 #include "TeamComponent.h"
-#include "SpawnComponent.h"
+
 
 // Sets default values for this component's properties
 USpawnComponent::USpawnComponent()

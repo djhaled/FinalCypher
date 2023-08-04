@@ -1,9 +1,10 @@
+#include "ShooterGameMode.h"
 #include "PlayerCharacter.h"
 #include "ShooterPlayerStart.h"
 #include "SpawnComponent.h"
 #include "TeamComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "ShooterGameMode.h"
+
 
 void AShooterGameMode::PostLogin(APlayerController* NewPlayer)
 {

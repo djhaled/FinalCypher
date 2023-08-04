@@ -1,6 +1,7 @@
+#include "TeamComponent.h"
 #include "ShooterGameMode.h"
 #include "PlayerCharacter.h"
-#include "TeamComponent.h"
+
 
 
 UTeamComponent::UTeamComponent()

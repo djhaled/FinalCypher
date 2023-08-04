@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
+#include "PlayerCharacter.h"
 #include "Net/UnrealNetwork.h"
 #include "HealthComponent.h"
-#include "PlayerCharacter.h"
+
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()

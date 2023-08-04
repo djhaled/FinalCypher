@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
+#include "DominationGameMode.h"
 #include "Net/UnrealNetwork.h" // Include this header for networking functionality
 #include "PlayerCharacter.h"
 #include "Misc/OutputDeviceNull.h"
 
-#include "DominationGameMode.h"
+
 
 void ADominationGameMode::BeginPlay()
 {
