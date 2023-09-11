@@ -15,38 +15,15 @@ AWeaponBase::AWeaponBase()
 	RootComponent = WeapMesh;
 }
 
-void AWeaponBase::PostLoad()
-{
-	Super::PostLoad();
-
-	// Check if we have an old "Weapon" SkeletalMeshComponent and redirect it to "WeapMesh"
-	if (USkeletalMeshComponent* OldWeaponMesh = FindComponentByClass<USkeletalMeshComponent>())
-	{
-		if (OldWeaponMesh->GetName() == "WeapMesh") {return;}
-		USkeletalMeshComponent* NewWeapMesh = WeapMesh;
-		if (NewWeapMesh)
-		{
-			NewWeapMesh->SetSkeletalMesh(OldWeaponMesh->SkeletalMesh);
-			TArray<UMaterialInterface*> MatInts = OldWeaponMesh->GetMaterials();
-			for (size_t i = 0; i < MatInts.Num(); i++)
-			{
-				NewWeapMesh->SetMaterial(i,MatInts[i]);
-			}
-			
-			//NewWeapMesh = OldWeaponMesh;
-			// Add any other property redirections or configurations here
-			// For example, if you have additional socket attachments or other settings,
-			// copy them over as well.
-		}
-
-		OldWeaponMesh->DestroyComponent(); // Optionally destroy the old component if needed
-	}
-}
-
 // Called when the game starts or when spawned
 void AWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void AWeaponBase::UpdateMesh(USkeletalMesh* Skelmesh)
+{
+	WeapMesh->SetSkeletalMesh(Skelmesh);
 }
 
 // Called every frame

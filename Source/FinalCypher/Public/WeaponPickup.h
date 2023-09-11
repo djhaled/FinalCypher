@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "FinalCypher/FinalCypher.h"
 #include "GameFramework/Actor.h"
 #include "WeaponPickup.generated.h"
 
@@ -22,7 +21,7 @@ public:
 
 protected:
 	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UStaticMeshComponent* Pickup;
 	
@@ -38,16 +37,22 @@ protected:
 	
 
 public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-	// Called when the player interacts with the pickup
-	UFUNCTION(BlueprintCallable)
-	void UpdatePickup(FPickupData WeaponPickupData);
+
 	
+	UFUNCTION(BlueprintCallable)
+	void UpdatePickup(FPickupData NewWeaponPickupData);
+
+	UFUNCTION(Server, Reliable)
+	void Server_UpdatePickup(FPickupData NewWeaponPickupData);
+
+	UFUNCTION(BlueprintImplementableEvent,Category="Test")
+	void UpdatePik_TEST(FPickupData NewWeaponPickupData);
+	// Multicast function to update clients
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_UpdatePickup(FPickupData NewWeaponPickupData);
 	//
 
 	UPROPERTY(VisibleAnywhere)
 	AWeaponBase* WeaponPickupActor;
-	UFUNCTION()
-	void OnInteract(AActor* Interactor);
+
 };

@@ -1,0 +1,6 @@
+
+******** Loading object SkeletalMesh4'FP_BountyHunter_S0_Skelmesh.FP_BountyHunter_S0_Skelmesh' ********
+
+ERROR: Serializing behind stopper (63F27+A0008 > 641B3)
+FPakFile::Serialize: file=/Game/Characters/BountyHunter/S0/1P/Models/FP_BountyHunter_S0_Skelmesh.uexp <- TArray::SerializeSimple <- FStaticLODModel4::SerializeRenderItem <- TArray::Serialize: 2/4 <- USkeletalMesh4::Serialize <- LoadObject: SkeletalMesh4'FP_BountyHunter_S0_Skelmesh.FP_BountyHunter_S0_Skelmesh', pos=6549A, ver=522/0 (unversioned), game=valorant <- UObject::EndLoad <- LoadWholePackage: /Game/Characters/BountyHunter/S0/1P/Models/FP_BountyHunter_S0_Skelmesh.uasset <- ExportPackages <- CUmodelApp::ShowPackageUI <- Main: umodel_build=(unversioned)
+

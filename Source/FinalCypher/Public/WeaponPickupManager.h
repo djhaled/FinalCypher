@@ -26,6 +26,8 @@ struct FPickupData
 	float PickupTime;
 
 	AWeaponPickup* CurrentPickup;
+
+	USkeletalMesh* PickupMesh;
 };
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class FINALCYPHER_API UWeaponPickupManager : public UActorComponent
@@ -50,14 +52,20 @@ public:
 	FPickupData GetAvailableWeapon();
 	UFUNCTION(BlueprintCallable, Category = "WeaponPickup")
 	AWeaponPickup* GetAvailablePickup();
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(DisplayName="Data Table Info", MakeStructureDefaultValue="None"))
+	TObjectPtr<UDataTable> WeaponsDataTable;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(DisplayName="Data Table Main", MakeStructureDefaultValue="None"))
+	TObjectPtr<UDataTable> WeaponsOtherDT;
 private:
 	// Array of available weapon data
 	UPROPERTY(EditAnywhere, Category = "WeaponPickup")
 	TArray<FPickupData> AvailableWeapons;
 
-
 	TArray<AWeaponPickup*> WeaponPickups;
+	UFUNCTION(BlueprintCallable)
+	void InitDataToStruct();
+	UFUNCTION(BlueprintCallable)
 	void InitializeEmptyPickups();
 	// Interval between pickups
 	UPROPERTY(EditAnywhere, Category = "WeaponPickup")

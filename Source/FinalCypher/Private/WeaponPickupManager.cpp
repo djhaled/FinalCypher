@@ -22,8 +22,9 @@ UWeaponPickupManager::UWeaponPickupManager()
 void UWeaponPickupManager::BeginPlay()
 {
 	Super::BeginPlay();
+	/*InitDataToStruct();
 	InitializeEmptyPickups();
-	SpawnInitialPickups();
+	SpawnInitialPickups();*/
 
 	// ...
 	
@@ -49,16 +50,16 @@ void UWeaponPickupManager::SpawnPickup(FPickupData PickupData)
 		if (AWeaponPickup* NewPickup = GetAvailablePickup())
 		{
 			// Set the PickupData for the new actor
-			NewPickup->UpdatePickup(PickupData);
+			NewPickup->UpdatePik_TEST(PickupData);
 		}
-	}
+	} 
 }
 
 
 FPickupData UWeaponPickupManager::GetAvailableWeapon()
 {
 	TArray<FPickupData> AvailableWeights;
-	for (const FPickupData& Weapon : AvailableWeapons)
+	for (const FPickupData Weapon : AvailableWeapons)
 	{
 		bool bAlreadySpawned = false;
 		for (AWeaponPickup* Pickup : WeaponPickups)
@@ -113,6 +114,28 @@ AWeaponPickup* UWeaponPickupManager::GetAvailablePickup()
 	return NULL;
 }
 
+
+void UWeaponPickupManager::InitDataToStruct()
+{
+	UDataTable* DataWeapons = WeaponsDataTable.Get();
+	TArray<FSInformation> WeaponDataRows;
+	FString ContextString;
+	auto RowNames = DataWeapons->GetRowNames();
+	for ( auto& name : RowNames )
+	{
+		FPickupData PickData =  FPickupData();
+		FSInventorySlot* row = DataWeapons->FindRow<FSInventorySlot>(name, ContextString);
+		if ( row )
+		{
+			PickData.Weight = row->Weight;
+			PickData.Pickup = row->Item;
+			PickData.PickupMesh = row->SkelMesh;
+			
+			AvailableWeapons.Add(PickData);
+		}
+	}
+
+}
 
 void UWeaponPickupManager::InitializeEmptyPickups()
 {
